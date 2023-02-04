@@ -22,7 +22,7 @@ var (
 
 var defaultConfig = Config{
 	Redis: RedisConfig{
-		Address:   "redis:6379",
+		Address:   "127.0.0.1:6379",
 		Password:  "",
 		Database:  0,
 		Prefix:    "bsz_",
