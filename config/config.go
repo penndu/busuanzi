@@ -25,6 +25,7 @@ var defaultConfig = Config{
 		Address:   "127.0.0.1:6379",
 		Password:  "",
 		Database:  0,
+		TLS:       false,
 		Prefix:    "bsz_",
 		MaxIdle:   10,
 		MaxActive: 100,
