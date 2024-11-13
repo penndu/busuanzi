@@ -3,12 +3,24 @@
     let url: string = "http://127.0.0.1:8080/api",
         tags: string[] = ["site_pv", "site_uv", "page_pv", "page_uv"],
         current: HTMLOrSVGScriptElement = document.currentScript,
-        pjax: boolean = current.hasAttribute("pjax"),
-        api: string = current.getAttribute("data-api") || url,
-        prefix: string = current.getAttribute("data-prefix") || "busuanzi",
-        storageName: string = "bsz-id";
+        pjax: boolean = current.hasAttribute("pjax"),                          // 是否启用 pjax
+        api: string = current.getAttribute("data-api") || url,                 // 自定义后端地址
+        prefix: string = current.getAttribute("data-prefix") || "busuanzi",    // 自定义标签ID前缀
+        style: string = current.getAttribute("data-style") || "default",       // 数字显示风格 default | comma | short
+        storageName: string = "bsz-id";                                        // 本地存储名称
 
-    let bsz_send: Function = function () {
+    let format = (num: number, style: string = 'default'): string => {
+        if (style === "comma") return num.toLocaleString();
+        if (style === "short") {
+            const units = ["", "K", "M", "B", "T"];
+            let index = Math.floor(Math.log10(num) / 3);
+            num /= Math.pow(1000, index);
+            return `${Math.round(num * 100) / 100}${units[index]}`;
+        }
+        return num.toString();
+    };
+
+    let bsz_send = () => {
         let xhr: XMLHttpRequest = new XMLHttpRequest();
         xhr.open("POST", api, true);
 
@@ -23,7 +35,7 @@
                     if (res.success === true) {
                         tags.map((tag: string) => {
                             let element = document.getElementById(`${prefix}_${tag}`);
-                            if (element != null) element.innerHTML = res['data'][tag];
+                            if (element != null) element.innerHTML = format(res['data'][tag], style);
 
                             let container = document.getElementById(`${prefix}_container_${tag}`);
                             if (container != null) container.style.display = "inline";
